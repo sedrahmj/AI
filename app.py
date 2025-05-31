@@ -70,7 +70,7 @@ menu = st.sidebar.radio("Select section", ["Data Analysis", "Classification", "C
 # ==============================
 # Load Data analysis file
 # ==============================
-df = pd.read_csv('AI/updated_file.csv')
+df = pd.read_csv('updated_file.csv')
 
 # ==============================
 # Data Analysis Section
@@ -244,7 +244,7 @@ if menu == "Data Analysis":
 # Classification Section
 # ==============================
 if menu == "Classification":   
-    df1 = pd.read_csv('AI/updated_file3.csv')
+    df1 = pd.read_csv('updated_file3.csv')
     elite_models = df1['Model'].dropna().unique().tolist()
 
     X = df1.drop("Confidence", axis=1)
