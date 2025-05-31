@@ -70,7 +70,7 @@ menu = st.sidebar.radio("Select section", ["Data Analysis", "Classification", "C
 # ==============================
 # Load Data analysis file
 # ==============================
-df = pd.read_csv('/content/drive/My Drive/AI project/updated_file.csv')
+df = pd.read_csv('AI/updated_file.csv')
 
 # ==============================
 # Data Analysis Section
@@ -244,7 +244,7 @@ if menu == "Data Analysis":
 # Classification Section
 # ==============================
 if menu == "Classification":   
-    df1 = pd.read_csv('/content/drive/My Drive/AI project/updated_file3.csv')
+    df1 = pd.read_csv('AI/updated_file3.csv')
     elite_models = df1['Model'].dropna().unique().tolist()
 
     X = df1.drop("Confidence", axis=1)
@@ -299,7 +299,6 @@ if menu == "Classification":
         else:
             original_confidence = "unavailable"
 
-    # عرض النتائج بشكل منسق
         st.write(f"### Results:")
         st.write(f"- **Confidence of the data:** {original_confidence}")
         st.write(f"- **Predicted value from the model:** {prediction_label}")
@@ -368,7 +367,7 @@ if menu == "Clustering":
 
 #save the inputs,outputs in the data set
     c.execute("INSERT INTO inputs (section, input_value) VALUES (?, ?)", ("clustering", str(k)))
-    # حفظ الرسم كـ output (base64)
+    # save the graph output (base64)
     buf = io.BytesIO()
     fig.savefig(buf, format="png")
     buf.seek(0)
