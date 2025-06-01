@@ -365,14 +365,6 @@ if menu == "Clustering":
     ax.set_title("KMeans Clustering (PCA View)")
     st.pyplot(fig)
 
-
-        #silhouette_score
-    sunique_clusters = np.unique(clusters)
-
-    sil_score = silhouette_score(df_scaled, clusters)
-    st.write(f"- **Silhouette Score for k={k}:** {sil_score:.4f}")
-
-    
 #save the inputs,outputs in the data set
     c.execute("INSERT INTO inputs (section, input_value) VALUES (?, ?)", ("clustering", str(k)))
     # save the graph output (base64)
