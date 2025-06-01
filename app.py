@@ -365,6 +365,10 @@ if menu == "Clustering":
     ax.set_title("KMeans Clustering (PCA View)")
     st.pyplot(fig)
 
+#silhouette_score
+    sil_score = silhouette_score(df_scaled, clusters)
+    st.write(f"**Silhouette Score for k={k}:** {sil_score:.4f}")
+    
 #save the inputs,outputs in the data set
     c.execute("INSERT INTO inputs (section, input_value) VALUES (?, ?)", ("clustering", str(k)))
     # save the graph output (base64)
@@ -373,7 +377,7 @@ if menu == "Clustering":
     buf.seek(0)
     img_base64 = base64.b64encode(buf.read()).decode("utf-8")
     buf.close()
-
+    c.execute("INSERT INTO outputs (section, output_value) VALUES (?, ?)", ("clustering_silhouette", str(sil_score)))
     c.execute("INSERT INTO outputs (section, output_value) VALUES (?, ?)", ("clustering", img_base64))
     conn.commit()
 
