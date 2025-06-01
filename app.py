@@ -408,5 +408,11 @@ if menu == "Database Viewer":
     inputs_df.to_csv("inputs_table.csv", index=False)
     outputs_df.to_csv("outputs_table.csv", index=False)
 
+    with open("inputs_table.csv", "rb") as f:
+         st.download_button("Download Inputs CSV", f, file_name="inputs_table.csv")
+
+    with open("outputs_table.csv", "rb") as f:
+         st.download_button("Download Outputs CSV", f, file_name="outputs_table.csv")
+
     conn.close()
 
