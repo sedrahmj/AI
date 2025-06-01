@@ -366,9 +366,13 @@ if menu == "Clustering":
     st.pyplot(fig)
 
 #silhouette_score
-    st.write("Calculating silhouette score...")
+    sunique_clusters = np.unique(clusters)
+if len(unique_clusters) < 2:
+    st.write("Error: Silhouette score requires at least 2 clusters.")
+else:
     sil_score = silhouette_score(df_scaled, clusters)
     st.write(f"**Silhouette Score for k={k}:** {sil_score:.4f}")
+
     
 #save the inputs,outputs in the data set
     c.execute("INSERT INTO inputs (section, input_value) VALUES (?, ?)", ("clustering", str(k)))
