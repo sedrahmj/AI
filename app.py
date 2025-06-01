@@ -277,7 +277,8 @@ if menu == "Classification":
 
     # إدخال اسم الموديل يدويًا
     selected_model = st.text_input("Enter Model Name (you can type any name):")
-
+    if selected_model:
+        st.write(f"enter,{selected_model}")
     if st.button("Predict Confidence") and selected_model.strip() != "":
         # تحضير بيانات الإدخال
         input_data = pd.DataFrame(np.zeros((1, len(X_encoded.columns))), columns=X_encoded.columns)
