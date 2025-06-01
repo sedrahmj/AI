@@ -373,7 +373,6 @@ if menu == "Clustering":
     buf.seek(0)
     img_base64 = base64.b64encode(buf.read()).decode("utf-8")
     buf.close()
-    c.execute("INSERT INTO outputs (section, output_value) VALUES (?, ?)", ("clustering_silhouette", str(sil_score)))
     c.execute("INSERT INTO outputs (section, output_value) VALUES (?, ?)", ("clustering", img_base64))
     conn.commit()
 
