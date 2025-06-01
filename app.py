@@ -365,13 +365,12 @@ if menu == "Clustering":
     ax.set_title("KMeans Clustering (PCA View)")
     st.pyplot(fig)
 
-#silhouette_score
+
+        #silhouette_score
     sunique_clusters = np.unique(clusters)
-    if len(unique_clusters) < 2:
-        st.write("Error: Silhouette score requires at least 2 clusters.")
-    else:
-        sil_score = silhouette_score(df_scaled, clusters)
-        st.write(f"**Silhouette Score for k={k}:** {sil_score:.4f}")
+
+    sil_score = silhouette_score(df_scaled, clusters)
+    st.write(f"- **Silhouette Score for k={k}:** {sil_score:.4f}")
 
     
 #save the inputs,outputs in the data set
