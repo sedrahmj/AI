@@ -247,58 +247,68 @@ if menu == "Classification":
     df1 = pd.read_csv('updated_file3.csv')
     elite_models = df1['Model'].dropna().unique().tolist()
 
+    # فصل البيانات
     X = df1.drop("Confidence", axis=1)
     y = df1["Confidence"]
+
+    # ترميز البيانات
     X_encoded = pd.get_dummies(X)
     le = LabelEncoder()
     y_encoded = le.fit_transform(y)
 
+    # تقسيم البيانات للتدريب والاختبار
     X_train, X_test, y_train, y_test = train_test_split(X_encoded, y_encoded, test_size=0.3, random_state=42)
 
-# Training a KNN model
+    # تدريب نموذج KNN
     knn = KNeighborsClassifier(n_neighbors=2)
     knn.fit(X_train, y_train)
 
-# Predict on test set to calculate metrics
+    # التنبؤ لمجموعة الاختبار
     y_pred = knn.predict(X_test)
- 
+
     st.title("Predict Confidence by Model Name")
 
-# Show performance metrics
+    # عرض المقاييس
     st.subheader("📊 Metrics")
     st.text(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
     st.text(f"Precision: {precision_score(y_test, y_pred, average='weighted'):.2f}")
     st.text(f"Recall: {recall_score(y_test, y_pred, average='weighted'):.2f}")
     st.text(f"F1 Score: {f1_score(y_test, y_pred, average='weighted'):.2f}")
 
-# Unique Model List
-    model_names = sorted(df['Model'].dropna().unique())
+    # إدخال اسم الموديل يدويًا
+    selected_model = st.text_input("Enter Model Name (you can type any name):")
 
-# Choose a model
-    selected_model = st.selectbox("Select Model:", model_names)
-
-    if st.button("Predict Confidence"):
+    if st.button("Predict Confidence") and selected_model.strip() != "":
+        # تحضير بيانات الإدخال
         input_data = pd.DataFrame(np.zeros((1, len(X_encoded.columns))), columns=X_encoded.columns)
         col_name = f"Model_{selected_model}"
 
         if col_name in X_encoded.columns:
             input_data.at[0, col_name] = 1
         else:
-            st.warning(f"Model '{selected_model}' not found in training data columns.")
-            st.stop()
+            # إذا القيمة جديدة، أضف العمود يدويًا للقيم الجديدة
+            input_data[col_name] = 1
 
-    # Prediction of value
+            # إضافة نفس العمود لبيانات التدريب بالقيمة 0
+            X_encoded[col_name] = 0
 
+            # إعادة تدريب النموذج
+            knn.fit(X_encoded, y_encoded)
+
+            st.warning("⚠️ This model name was not part of the training data. The prediction may be inaccurate.")
+
+        # التنبؤ
         prediction_encoded = knn.predict(input_data)
         prediction_label = le.inverse_transform(prediction_encoded)[0]
 
-# Extract the original confidence value from the data
-        original_confidence = df1[df1['Model'] == selected_model]['Confidence'].values
-        if len(original_confidence) > 0:
-            original_confidence = original_confidence[0]
+        # استخراج القيمة الأصلية إن وجدت
+        original_values = df1[df1['Model'] == selected_model]['Confidence'].values
+        if len(original_values) > 0:
+            original_confidence = original_values[0]
         else:
             original_confidence = "unavailable"
 
+        # عرض النتائج
         st.write(f"### Results:")
         st.write(f"- **Confidence of the data:** {original_confidence}")
         st.write(f"- **Predicted value from the model:** {prediction_label}")
@@ -309,15 +319,11 @@ if menu == "Classification":
             else:
                 st.error("❌ The prediction does not match the original value.")
 
-# Save the model name entry in the database
+        # حفظ الإدخال في قاعدة البيانات
         c.execute("INSERT INTO inputs (section, input_value) VALUES (?, ?)", ("classification", selected_model))
         conn.commit()
 
-        if selected_model in df1['Model'].values:
-             original_confidence = df1[df1['Model'] == selected_model]['Confidence'].values[0]
-        else:
-             original_confidence = "Model not found"
-
+        # حفظ المخرجات
         match_result = "Match" if original_confidence == prediction_label else "Mismatch"
         c.execute("INSERT INTO outputs (section, output_value) VALUES (?, ?)", ("classification", match_result))
         conn.commit()
