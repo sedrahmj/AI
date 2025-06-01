@@ -398,6 +398,15 @@ if menu == "Database Viewer":
             st.image(img_data, caption="KMeans Clustering Graph")
         else:
             st.write(f"Row {idx + 1} - Section: {row['section']} - Output: {row['output_value']}")
+     
+    
+    
+    
+    inputs_df = pd.read_sql_query("SELECT * FROM inputs", conn)
+    outputs_df = pd.read_sql_query("SELECT * FROM outputs", conn)
 
+    inputs_df.to_csv("inputs_table.csv", index=False)
+    outputs_df.to_csv("outputs_table.csv", index=False)
 
+    conn.close()
 
